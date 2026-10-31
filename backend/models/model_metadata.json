@@ -1,0 +1,44 @@
+{
+  "model_type": "ExtraTreesRegressor Multi-Target Agronomic & Forest Ensemble (5 Dedicated Estimators)",
+  "num_trees_per_target": 80,
+  "total_estimators": 400,
+  "training_samples": 7040,
+  "test_samples": 1760,
+  "total_species_catalog": 44,
+  "overall_r2_accuracy": 0.8019,
+  "target_metrics": {
+    "suitability_match_score": {
+      "r2": 0.6512,
+      "mae": 6.839,
+      "rmse": 8.757
+    },
+    "survival_rate_pct": {
+      "r2": 0.6604,
+      "mae": 6.595,
+      "rmse": 8.358
+    },
+    "predicted_yield_t_ha": {
+      "r2": 0.8869,
+      "mae": 1.79,
+      "rmse": 2.307
+    },
+    "carbon_sequestration_t_ha_yr": {
+      "r2": 0.811,
+      "mae": 1.328,
+      "rmse": 1.71
+    },
+    "optimal_density_ha": {
+      "r2": 0.9999,
+      "mae": 1085.931,
+      "rmse": 3338.365
+    }
+  },
+  "pillar_feature_importances_pct": {
+    "climate_and_temperature": 26.5,
+    "soil_and_npk_nutrients": 28.0,
+    "water_and_rainfall": 23.5,
+    "aqi_biofiltration": 12.0,
+    "species_intrinsic_traits": 10.0
+  },
+  "status": "trained_active"
+}

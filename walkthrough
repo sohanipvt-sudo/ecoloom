@@ -1,0 +1,50 @@
+EcoLoom System Walkthrough & Verification Report🌟 Executive SummaryEcoLoom is an end-to-end AI-powered geospatial platform designed for environmental restoration authorities, forestry departments, and ESG carbon developers. It monitors afforestation density across any user-selected Region of Interest (ROI) using simulated Sentinel-2 multi-spectral satellite imagery, calculates high-resolution NDVI vegetation indices, automatically discovers allocatable public barren plots (excluding water bodies and private/built-up properties via spatial masking), and applies a multi-criteria scoring algorithm to recommend native plant species tailored to local micro-environmental conditions.
+--------------------------------------------------------------------------------
+🛰️ 1. Core Architecture & Workflowflowchart TD
+    A[User Selects ROI or Preset Hotspot] --> B[Satellite Engine: Spectral Reflectance & NDVI]
+    B --> C[Spatial Masking: OSM Exclusions & Parcel Bank]
+    C --> D[Micro-Environmental & Agronomic Profiling]
+    D --> E[ML Ensemble Model: 4-Pillar ExtraTreesRegressor]
+    E --> F[Interactive Map Canvas & Telemetry Inspection]
+    F --> G[Dossier & GeoJSON Export]
+
+--------------------------------------------------------------------------------
+🌿 2. Key Modules & Technical CapabilitiesA. Multi-Spectral Earth Observation & NDVI Engine (satellite_engine.py)Simulated Sentinel-2 Bands:Band 4 (Red, 665 nm)Band 8 (Near-Infrared / NIR, 842 nm)Band 3 (Green, 560 nm)Band 11 (Shortwave Infrared / SWIR, 1610 nm)NDVI Formula & Coverage Scoring: $$\text{NDVI} = \frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}}$$Categorical Land Classification:🌲 Dense Canopy Forest ($\text{NDVI} > 0.65$)🌳 Moderate Tree Cover ($0.45 \le \text{NDVI} \le 0.65$)🌾 Sparse Scrub & Grassland ($0.20 \le \text{NDVI} < 0.45$)🏜️ Barren Soil / Degraded Ground ($\text{NDVI} < 0.20$)💧 Water Bodies ($\text{NDVI} < 0.0$)
+--------------------------------------------------------------------------------
+B. Spatial Exclusion & Parcel Bank (osm_masking.py)Geometric Exclusion: Automatically masks and protects water bodies, wetlands, urban settlements, and private property using Shapely.Barren Parcel Allocation: Segments contiguous public fallow land into discrete plantable candidate parcels (PARCEL-A, PARCEL-B, etc.) with calculated area in hectares.Environmental Profiling: Computes terrain slope gradient, erosion risk, ambient AQI (PM2.5/PM10), soil pH, and distance to surface water.
+--------------------------------------------------------------------------------
+C. 4-Pillar AI Botanical Matchmaking & Agronomic Advisor (recommendation_engine.py & ml_model.py)44+ Botanical Species & Crop Catalog:Canopy & Timber Forestry Trees: Azadirachta indica (Neem), Ficus religiosa (Peepal), Casuarina equisetifolia (Whistling Pine), Dalbergia sissoo (Shisham), Albizia lebbeck (Siris).Soil Anchor & Erosion Champions: Chrysopogon zizanioides (Vetiver Grass), Acacia nilotica (Babul).Sodic Land Reclaimers & Biofuel Pioneers: Millettia pinnata (Karanj), Prosopis cineraria (Khejri).Rainforest Buffer & Canopy Reconstructors: Terminalia arjuna (Arjun), Syzygium cumini (Jamun), Bambusa bambos (Giant Thorny Bamboo).Agronomic & Agroforestry Companion Crops: Cereals, pulses, spices, and horticulture companions.4-Pillar Multi-Criteria Analysis:Climate Compatibility: Thermal envelopes and precipitation bands.Water Demand & Hydrology: Drought tolerance vs. groundwater availability.Land & Soil Chemistry: N-P-K nutrient balancing, slope anchoring, and pH limits.AQI & Bio-Filtering: Particulate matter absorption and gaseous carbon capture.Machine Learning Regressor:Multi-output ExtraTreesRegressor ensemble predicting suitability score (%), survival probability (%), harvest yield ($t/\text{ha}$), carbon sequestration ($t\text{CO}_2\text{e}/\text{ha}/\text{yr}$), and optimal sapling density.
+--------------------------------------------------------------------------------
+D. Interactive GIS Frontend (frontend/)Leaflet Map Canvas: Satellite basemap with dynamic raster overlays for NDVI heatmaps.Interactive Parcel Inspector: Clickable candidate parcels displaying environmental telemetry, ML confidence scores, and species planting blueprints.Preset Hotspot Switcher: Fast navigation across 5 global ecological zones (Aravalli Degraded Ridge, Sahel Great Green Wall, Western Ghats Escarpment, Sierra Nevada Burn Scar, Central Kalimantan Peatland).Report & GeoJSON Export: One-click printable executive dossier and GeoJSON parcel boundaries.
+--------------------------------------------------------------------------------
+🧪 3. Verification & Validation ResultsBackend Automated Test Suite (test_engine.py)Execution results from the backend test suite:>>> 1. Testing Presets & Coordinate Environmental Inference...
+Cairo Inference: Climate=Arid / Desert, Land=Sandy Dunes / Desert Soil, Water=Groundwater Deficit / Low Soil Moisture, AQI=135
+Kolkata Inference: Climate=Semi-Arid Subtropical, Land=Degraded Agricultural Fallow / Loam, AQI=195
+
+>>> 2. Testing Satellite Spectral & NDVI Engine...
+Afforestation Score: 16.6% | Mean NDVI: 0.196
+
+>>> 3. Testing Spatial Exclusion & Candidate Parcel Generation...
+Candidate Parcels Identified: 4 (Total Area: 168.7 ha)
+
+>>> 4. Testing 4-Pillar Matchmaking with 45+ Species (Count: 44)...
+  * [Deep-Root Slope & Erosion Anchor] Chrysopogon zizanioides (Vetiver Grass): Match 93.8% | Yield: 16.4 t/ha
+  * [Sodic Land Reclaimer & Biofuel Pioneer] Millettia pinnata (Pongamia): Match 93.1% | Yield: 3.3 t/ha
+  * [Broadleaf Bio-Filter & Pioneer] Azadirachta indica (Neem): Match 89.7% | Yield: 3.3 t/ha
+  * [Urban Bio-Filter & High Nitrogen Fixer] Albizia lebbeck (Siris): Match 88.4% | Yield: 3.3 t/ha
+  * [Saline & Windbreak Pioneer] Casuarina equisetifolia (Whistling Pine): Match 85.4% | Yield: 13.4 t/ha
+
+>>> 5. Testing Agronomic Crop & Agroforestry Advisor Engine...
+  * Identified 12 suitable crops & companion systems.
+    - Vetiver Grass: Score 93.8% | Yield: 16.4 t/ha | NPK Match: 97.8% | Companion: Fruit Orchards, Moringa, Teak Contours
+    - Karanj / Indian Beech: Score 93.3% | Yield: 3.3 t/ha | NPK Match: 97.8% | Companion: Groundnut, Chickpea, Castor
+    - Neem / Indian Lilac: Score 89.9% | Yield: 3.3 t/ha | NPK Match: 97.8% | Companion: Chickpea, Pearl Millet, Turmeric
+
+[SUCCESS] All EcoLoom 4-Pillar, Agronomy & Crop Advisory services validated!
+Frontend Production Build (npm run build)Vite build completed successfully in 951ms with zero bundle errors:dist/index.html (1.48 kB)dist/assets/index-8wEK6mX-.css (63.62 kB)dist/assets/index-Dn__H1oS.js (533.78 kB)
+--------------------------------------------------------------------------------
+🚀 4. How to Run the PlatformStart the Backend (FastAPI)cd backend
+.\.venv\Scripts\activate
+python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+API Swagger documentation is accessible at http://127.0.0.1:8000/docs.Start the Frontend (Vite React)cd frontend
+npm run dev
